@@ -47,10 +47,7 @@ public class LocationObtainment : MonoBehaviour
         else
         {
             // Access granted and location value could be retrieved
-            location.Longitude = Input.location.lastData.longitude;
-            location.Latitude = Input.location.lastData.latitude;
-            location.Altitude = Input.location.lastData.altitude;
-            trueHeading = Input.compass.trueHeading;
+            GetLocationData();
         }
     }
 
@@ -59,10 +56,7 @@ public class LocationObtainment : MonoBehaviour
     {
         if (Input.location.status == LocationServiceStatus.Running)
         {
-            location.Longitude = Input.location.lastData.longitude;
-            location.Latitude = Input.location.lastData.latitude;
-            location.Altitude = Input.location.lastData.altitude;
-            trueHeading = Input.compass.trueHeading;
+            GetLocationData();
         }
     }
 
@@ -98,11 +92,16 @@ public class LocationObtainment : MonoBehaviour
             else
             {
                 // Access granted and location value could be retrieved
-                location.Longitude = Input.location.lastData.longitude;
-                location.Latitude = Input.location.lastData.latitude;
-                location.Altitude = Input.location.lastData.altitude;
-                trueHeading = Input.compass.trueHeading;
+                GetLocationData();
             }
         }
+    }
+
+    private void GetLocationData()
+    {
+        location.Longitude = Input.location.lastData.longitude;
+        location.Latitude = Input.location.lastData.latitude;
+        location.Altitude = Input.location.lastData.altitude;
+        trueHeading = Input.compass.trueHeading;
     }
 }

@@ -44,7 +44,7 @@ public class CoordinateConvert : MonoBehaviour
         Vector2 vecCam2ArPos = arPosXZ - camPosXZ;
         float angle = Vector2.Angle(camForwardXZ, vecCam2ArPos);
 
-        //定义向量\vec{a}、\vec{b}，当\vec{a}X\vec{b}<0时（X就表示叉乘），\vec{b}对应的线段在\vec{a}的顺时针方向；当\vec{a}X\vec{b}=0时，\vec{a}、\vec{b}共线；当\vec{a}X\vec{b}>0时，\vec{b}在\vec{a}的逆时针方向
+        //定义向量vec{a}、vec{b}，当vec{a}Xvec{b}<0时（X就表示叉乘），vec{b}对应的线段在vec{a}的顺时针方向；当vec{a}Xvec{b}=0时，vec{a}、vec{b}共线；当vec{a}Xvec{b}>0时，vec{b}在vec{a}的逆时针方向
         if (Vector3.Cross(new Vector3(camForwardXZ.x, 0, camForwardXZ.y), new Vector3(vecCam2ArPos.x, 0, vecCam2ArPos.y)).y > 0)
         {
             angle = -angle;
@@ -102,8 +102,8 @@ public class Location
                 * Math.Sin(lonDistance / 2d) * Math.Sin(lonDistance / 2d);
         double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         double distance = R * c * 1000d; // 单位转换成米
-        distance = Math.Pow(distance, 2);  //TODO:这边不懂为什么先平方再开方
-        return Math.Sqrt(distance);
+        //distance = Math.Pow(distance, 2);  //TODO:这边不懂为什么先平方再开方
+        return  distance/*Math.Sqrt(distance)*/;
     }
 
     /// <summary>
@@ -123,9 +123,6 @@ public class Location
         return (Rad2Deg(Math.Atan2(y, x)) + 360d) % 360d;
     }
 
-    /*
- * 大地坐标系资料WGS-84 长半径a=6378137 短半径b=6356752.3142 扁率f=1/298.2572236
- */
     /** 长半径a=6378137 */
     private const double a = 6378137;
     /** 短半径b=6356752.3142 */
@@ -183,8 +180,8 @@ public class Location
         double revAz = Math.Atan2(sinAlpha, -tmp); // final bearing
 
         return new Location(Rad2Deg(lat2), lon + Rad2Deg(L), 0);
-        //System.out.println(revAz);
-        //System.out.println(lon + deg(L) + "," + deg(lat2));
+        //Debug.Log(revAz);
+        //Debug.Log(lon + deg(L) + "," + deg(lat2));
     }
 
     private double Deg2Rad(double deg)

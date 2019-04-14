@@ -19,11 +19,11 @@ public class Controller : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        ArObjData data = new ArObjData();
-        data.location = new Location(1, 1, 1);
-        data.rotate = Vector3.one;
-        data.scale = Vector3.one;
-        Debug.Log(JsonUtility.ToJson(data));
+        //ArObjData data = new ArObjData();
+        //data.location = new Location(1, 1, 1);
+        //data.rotate = Vector3.one;
+        //data.scale = Vector3.one;
+        //Debug.Log(JsonUtility.ToJson(data));
 
         addModelBtn.onClick.AddListener(AddModel);
         deleteModelBtn.onClick.AddListener(DeleteModel);

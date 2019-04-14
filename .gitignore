@@ -1,5 +1,7 @@
 Library/
 Logs/
 Packages/
+.vs/
+obj/
 *.csproj
 *.sln
