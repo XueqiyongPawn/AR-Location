@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/GoogleARCore/Examples/CloudAnchors/Scenes/CloudAnchors.unity
     guid: 83fb41cc294e74bdea57537befa00ffc
-  - enabled: 1
+  - enabled: 0
     path: Assets/GoogleARCore/Examples/HelloAR/Scenes/HelloAR.unity
     guid: e6a6fa04348cb45c9b0221eb19c946da
   - enabled: 0
@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/GoogleARCore/Examples/ObjectManipulation/Scenes/ObjectManipulation.unity
     guid: 9dba7e74f4d2b410f90b920f80528d44
+  - enabled: 1
+    path: Assets/Location/Scenes/ArLocation.unity
+    guid: 5b095b98661c6894d9d02fe304bf9183
   m_configObjects: {}
