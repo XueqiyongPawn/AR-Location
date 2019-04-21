@@ -12,7 +12,7 @@ public class ShowLocation : MonoBehaviour
     {
         if (Input.location.status == LocationServiceStatus.Running)
         {
-            gpsText.GetComponent<Text>().text = string.Format("{0},{1},{2},{3}", LocationObtainment.location.Latitude.ToString(), LocationObtainment.location.Longitude.ToString(), LocationObtainment.location.Altitude.ToString(), LocationObtainment.trueHeading.ToString());
+            gpsText.GetComponent<Text>().text = string.Format("{0},{1},{2},{3}", LocationObtainment.location.latitude.ToString(), LocationObtainment.location.longitude.ToString(), LocationObtainment.location.altitude.ToString(), LocationObtainment.trueHeading.ToString());
         }
     }
 }

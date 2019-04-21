@@ -30,7 +30,7 @@ public class CoordinateConvert : MonoBehaviour
 
         Vector2 targetVec = camToTargetVec + camPosXZ;
 
-        return new Vector3(targetVec.x, cameraTransform.position.y + (float)(targetLocation.Altitude - referenceLocation.Altitude), targetVec.y);
+        return new Vector3(targetVec.x, cameraTransform.position.y + (float)(targetLocation.altitude - referenceLocation.altitude), targetVec.y);
     }
 
     public static Location ChangeARPos2GPSLocation(Location referenceLocation, Vector3 ArPos, Transform camTransform)
@@ -53,7 +53,7 @@ public class CoordinateConvert : MonoBehaviour
         float bearing = Input.compass.trueHeading + angle;
 
         Location targetLocation = referenceLocation.ComputerByLonLat(bearing, dis);
-        targetLocation.Altitude = referenceLocation.Altitude + (ArPos.y - camTransform.position.y);
+        targetLocation.altitude = referenceLocation.altitude + (ArPos.y - camTransform.position.y);
         return targetLocation;
     }
 }
@@ -64,17 +64,17 @@ public class Location
     /// <summary>
     /// 纬度
     /// </summary>
-    public double Latitude;
+    public double latitude;
 
     /// <summary>
     /// 经度
     /// </summary>
-    public double Longitude;
+    public double longitude;
 
     /// <summary>
     /// 海拔
     /// </summary>
-    public double Altitude;
+    public double altitude;
 
     public Location()
     {
@@ -82,9 +82,9 @@ public class Location
 
     public Location(double latitude, double longitude, double altitude)
     {
-        Latitude = latitude;
-        Longitude = longitude;
-        Altitude = altitude;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.altitude = altitude;
     }
 
     /// <summary>
@@ -95,10 +95,10 @@ public class Location
     public double Distance(Location other)
     {
         int R = 6371; // 地球半径KM
-        double latDistance = Deg2Rad(other.Latitude - Latitude);
-        double lonDistance = Deg2Rad(other.Longitude - Longitude);
+        double latDistance = Deg2Rad(other.latitude - latitude);
+        double lonDistance = Deg2Rad(other.longitude - longitude);
         double a = Math.Sin(latDistance / 2d) * Math.Sin(latDistance / 2d)
-                + Math.Cos(Deg2Rad(Latitude)) * Math.Cos(Deg2Rad(other.Latitude))
+                + Math.Cos(Deg2Rad(latitude)) * Math.Cos(Deg2Rad(other.latitude))
                 * Math.Sin(lonDistance / 2d) * Math.Sin(lonDistance / 2d);
         double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
         double distance = R * c * 1000d; // 单位转换成米
@@ -113,10 +113,10 @@ public class Location
     /// <returns>单位：度</returns>
     public double Bearing(Location other)
     {
-        double longitude1 = Longitude;
-        double longitude2 = other.Longitude;
-        double latitude1 = Deg2Rad(Latitude);
-        double latitude2 = Deg2Rad(other.Latitude);
+        double longitude1 = longitude;
+        double longitude2 = other.longitude;
+        double latitude1 = Deg2Rad(latitude);
+        double latitude2 = Deg2Rad(other.latitude);
         double longDiff = Deg2Rad(longitude2 - longitude1);
         double y = Math.Sin(longDiff) * Math.Cos(latitude2);
         double x = Math.Cos(latitude1) * Math.Sin(latitude2) - Math.Sin(latitude1) * Math.Cos(latitude2) * Math.Cos(longDiff);
@@ -138,8 +138,8 @@ public class Location
     /// <returns></returns>
     public Location ComputerByLonLat(double brng, double dist)
     {
-        double lon = Longitude;
-        double lat = Latitude;
+        double lon = longitude;
+        double lat = latitude;
         double alpha1 = Deg2Rad(brng);
         double sinAlpha1 = Math.Sin(alpha1);
         double cosAlpha1 = Math.Cos(alpha1);

@@ -14,7 +14,11 @@ public class Controller : MonoBehaviour
 
     public Text logText;
 
-    private GameObject curGo = null;
+    private GameObject _curGo = null;
+
+    public bool isLocal = false;
+
+    private string _lastPosId = string.Empty;
 
     // Start is called before the first frame update
     private void Start()
@@ -29,22 +33,32 @@ public class Controller : MonoBehaviour
         deleteModelBtn.onClick.AddListener(DeleteModel);
         saveBtn.onClick.AddListener(Save);
         readBtn.onClick.AddListener(Read);
+        
     }
 
     // Update is called once per frame
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            ArObjData arObjData = new ArObjData();
+            SavePosData(JsonUtility.ToJson(arObjData));
+        }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            GetPosData();
+        }
     }
 
     private void AddModel()
     {
-        if (curGo == null)
+        if (_curGo == null)
         {
-            curGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            _curGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Vector3 camFrowardXZ = mainCamera.transform.forward;
             camFrowardXZ.y = 0;
-            curGo.transform.position = mainCamera.transform.position + camFrowardXZ.normalized * 2;
-            curGo.transform.localScale = Vector3.one * 0.5f;
+            _curGo.transform.position = mainCamera.transform.position + camFrowardXZ.normalized * 2;
+            _curGo.transform.localScale = Vector3.one * 0.5f;
             logText.text = "添加模型成功";
         }
         else
@@ -55,10 +69,10 @@ public class Controller : MonoBehaviour
 
     private void DeleteModel()
     {
-        if (curGo != null)
+        if (_curGo != null)
         {
-            GameObject.DestroyImmediate(curGo);
-            curGo = null;
+            GameObject.DestroyImmediate(_curGo);
+            _curGo = null;
             logText.text = "删除成功";
         }
         else
@@ -69,26 +83,28 @@ public class Controller : MonoBehaviour
 
     private void Save()
     {
-        if (curGo == null)
+        if (_curGo == null)
         {
             logText.text = "场景中无模型，无法保存，请添加";
         }
         else
         {
             ArObjData arObjData = new ArObjData();
-            arObjData.location = CoordinateConvert.ChangeARPos2GPSLocation(LocationObtainment.location, curGo.transform.position, mainCamera.transform);
-            arObjData.rotate = curGo.transform.eulerAngles;
-            arObjData.scale = curGo.transform.localScale;
-            PlayerPrefs.SetString("location", JsonUtility.ToJson(arObjData));
-            logText.text = "保存成功：pos " + curGo.transform.position + JsonUtility.ToJson(arObjData);
+            arObjData.location = CoordinateConvert.ChangeARPos2GPSLocation(LocationObtainment.location, _curGo.transform.position, mainCamera.transform);
+            arObjData.rotate = _curGo.transform.eulerAngles;
+            arObjData.scale = _curGo.transform.localScale;
+            //PlayerPrefs.SetString("location", JsonUtility.ToJson(arObjData));
+            SavePosData(JsonUtility.ToJson(arObjData));
+            logText.text = "保存成功：pos " + _curGo.transform.position + JsonUtility.ToJson(arObjData);
         }
     }
 
     private void Read()
     {
-        if (curGo == null)
+        if (_curGo == null)
         {
-            string json = PlayerPrefs.GetString("location");
+            //string json = PlayerPrefs.GetString("location");
+            string json = GetPosData();
             if (string.IsNullOrEmpty(json))
             {
                 logText.text = "没有可读取的数据";
@@ -96,16 +112,62 @@ public class Controller : MonoBehaviour
             else
             {
                 ArObjData data = JsonUtility.FromJson<ArObjData>(json);
-                curGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                curGo.transform.position = CoordinateConvert.ChangeGPSLocation2ARPos(LocationObtainment.location, data.location, mainCamera.transform);
-                curGo.transform.eulerAngles = data.rotate;
-                curGo.transform.localScale = data.scale;
-                logText.text = "读取并加载成功：" + curGo.transform.position;
+                _curGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                _curGo.transform.position = CoordinateConvert.ChangeGPSLocation2ARPos(LocationObtainment.location, data.location, mainCamera.transform);
+                _curGo.transform.eulerAngles = data.rotate;
+                _curGo.transform.localScale = data.scale;
+                logText.text = "读取并加载成功：" + _curGo.transform.position;
             }
         }
         else
         {
             logText.text = "场景中已存在模型，请先删除";
         }
+    }
+
+    private string GetPosData()
+    {
+        string data = string.Empty;
+        if (isLocal)
+        {
+            data = PlayerPrefs.GetString("location");
+        }
+        HttpHelper.Instance.Get(HttpHelper.URL + "/" + _lastPosId,(result)=>
+        {
+            if (result.isHttpError || result.isNetworkError)
+            {
+                Debug.Log(result.error);
+            }
+            else
+            {
+                Debug.Log("Get 数据成功：" + result.downloadHandler.text);
+                data = result.downloadHandler.text;
+            }
+        });
+        return data;
+    }
+    private void SavePosData(string data)
+    {
+        if (isLocal)
+        {
+            PlayerPrefs.SetString("location", JsonUtility.ToJson(data));
+        }
+        else
+        { 
+            HttpHelper.Instance.Post(HttpHelper.URL,data,(result)=>
+            {
+                if (result.isHttpError || result.isNetworkError)
+                {
+                    Debug.Log(result.error);
+                }
+                else
+                {
+                    Debug.Log("上传成功：" + result.downloadHandler.text);
+                    _lastPosId = result.downloadHandler.text;
+                }
+                
+            });
+        }
+
     }
 }

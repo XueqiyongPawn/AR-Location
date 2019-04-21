@@ -99,9 +99,9 @@ public class LocationObtainment : MonoBehaviour
 
     private void GetLocationData()
     {
-        location.Longitude = Input.location.lastData.longitude;
-        location.Latitude = Input.location.lastData.latitude;
-        location.Altitude = Input.location.lastData.altitude;
+        location.longitude = Input.location.lastData.longitude;
+        location.latitude = Input.location.lastData.latitude;
+        location.altitude = Input.location.lastData.altitude;
         trueHeading = Input.compass.trueHeading;
     }
 }
