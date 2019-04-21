@@ -3,5 +3,6 @@ Logs/
 Packages/
 .vs/
 obj/
+Build/
 *.csproj
 *.sln
